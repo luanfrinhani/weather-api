@@ -1,0 +1,30 @@
+services:
+    app:
+        build:
+            context: ..               # <-- raiz do projeto
+            dockerfile: docker/Dockerfile
+        image: weather-api:latest              # <- Nome da imagem
+        container_name: weather-api-app
+        working_dir: /var/www
+        volumes:
+            - ../:/var/www            # <-- monta raiz dentro do container
+        env_file:
+            - ../.env                 # <-- .env fica na raiz
+        networks:
+            - weather-net
+
+    nginx:
+        image: nginx:alpine
+        container_name: laravel-nginx
+        ports:
+            - "8080:80"
+        volumes:
+            - ../:/var/www            # <-- monta raiz
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - app
+        networks:
+            - weather-net
+
+networks:
+    weather-net:
