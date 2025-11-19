@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Src\Interface\Controller\V1\HealthCheckController;
+use Src\Interface\Controller\V1\WeatherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,5 @@ use Src\Interface\Controller\V1\HealthCheckController;
 */
 Route::group(['prefix' => 'v1'], function () {
     Route::get('/health', HealthCheckController::class);
+    Route::get('/weather', [WeatherController::class, 'getLocationWeather']);
 });

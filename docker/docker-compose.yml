@@ -10,6 +10,7 @@ services:
             - ../:/var/www            # <-- monta raiz dentro do container
         env_file:
             - ../.env                 # <-- .env fica na raiz
+        dns: 8.8.8.8
         networks:
             - weather-net
 
