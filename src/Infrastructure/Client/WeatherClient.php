@@ -3,6 +3,9 @@
 namespace Src\Infrastructure\Client;
 
 use Illuminate\Support\Facades\Http;
+use Src\Domain\Exception\BadRequestException;
+use Src\Domain\Exception\UnauthorizedException;
+use Src\Domain\Processor\ExceptionStrategyProcessor;
 use Src\Infrastructure\Utils\ConfigLaravel;
 
 class WeatherClient
@@ -17,14 +20,18 @@ class WeatherClient
         $this->apiKey = $this->config->get('services.weather.api_key');
     }
 
+    /**
+     * @throws UnauthorizedException
+     * @throws BadRequestException
+     */
     public function getLocationWeather(string $location)
     {
         $url = "$this->baseUrl/$location?key=$this->apiKey";
         $response = Http::get($url);
-        if ($response->successful()) {
-            return $response->json();
+        if ($response->failed()) {
+            ExceptionStrategyProcessor::process($response->status());
         }
 
-        return null;
+        return $response->json();
     }
 }
